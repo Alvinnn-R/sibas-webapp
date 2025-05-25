@@ -86,7 +86,12 @@
                             <td>
                                 <!-- Tombol Edit: Modal trigger -->
                                 <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#modalEditSatuan<?php echo $row['id'] ?>">Edit</button>
-                                <a href="satuan.php?hapus=<?php echo $row['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Hapus data ini?')">Hapus</a>
+                                <button type="button"
+                                        class="btn btn-danger btn-sm btn-hapus"
+                                        data-id="<?php echo $row['id']; ?>"
+                                        data-nama="<?php echo htmlspecialchars($row['nama_satuan']); ?>">
+                                        Hapus
+                                    </button>
                             </td>
                         </tr>
                         <!-- Modal Edit per-row -->
@@ -143,8 +148,48 @@
           </form>
         </div>
     </div>
+
+    <!-- Modal Hapus -->
+    <div class="modal fade" id="modalHapusJenis" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Konfirmasi Hapus</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modalHapusBody">
+                    Apakah Anda yakin ingin menghapus data ini?
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" id="hapusId" value="">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-danger" id="btnKonfirmasiHapus">Ya, Hapus</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- /.container-fluid -->
 
 <?php include '../public/templates/footer.php'; ?>
+
+<script>
+    $(document).ready(function() {
+        $('.btn-hapus').on('click', function() {
+            var id = $(this).data('id');
+            var nama = $(this).data('nama');
+            $('#hapusId').val(id); // simpan ID untuk digunakan nanti
+            $('#modalHapusBody').html('Apakah Anda yakin ingin menghapus data <b>' + nama + '</b>?');
+            $('#modalHapusJenis').modal('show');
+        });
+
+        // Ketika tombol Ya, Hapus diklik
+        $('#btnKonfirmasiHapus').on('click', function() {
+            var id = $('#hapusId').val();
+            window.location.href = 'satuan.php?hapus=' + id;
+        });
+    });
+</script>
