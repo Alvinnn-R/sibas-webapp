@@ -1,0 +1,3 @@
+# Ignore uploaded files but keep folder structure
+public/upload/profile/*
+!public/upload/profile/.gitkeep
