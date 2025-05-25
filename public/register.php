@@ -20,22 +20,61 @@
             $errors[] = "Nama lengkap dan username wajib diisi.";
         }
 
+                               // Handle file upload
+        $relative_path = null; // Default jika tidak upload
+        if (isset($_FILES['profile']) && $_FILES['profile']['error'] == 0) {
+            $profile_tmp_name  = $_FILES['profile']['tmp_name'];
+            $profile_name      = $_FILES['profile']['name'];
+            $profile_extension = pathinfo($profile_name, PATHINFO_EXTENSION);
+            $profile_new_name  = uniqid() . '.' . $profile_extension;
+
+            // PASTIKAN path ke Luar Public!
+            $profile_dir = '../uploads/profiles/';
+            if (! is_dir($profile_dir)) {
+                mkdir($profile_dir, 0777, true);
+            }
+
+            $profile_path = $profile_dir . $profile_new_name;
+
+            if (! move_uploaded_file($profile_tmp_name, $profile_path)) {
+                $errors[] = "Gambar profil gagal di-upload.";
+            } else {
+                // RELATIVE PATH ke database untuk <img src="">
+                $relative_path            = 'uploads/profiles/' . $profile_new_name;
+                $_SESSION['user_profile'] = $relative_path;
+            }
+        }
+
         if (empty($errors)) {
             $hash = password_hash($password, PASSWORD_DEFAULT);
 
-            $stmt = $conn->prepare("INSERT INTO users (nama_lengkap, username, password) VALUES (?, ?, ?)");
-            $stmt->bind_param("sss", $nama, $username, $hash);
-            $stmt->execute();
-
-            if ($stmt->affected_rows > 0) {
-                $success = "Registrasi berhasil. <a href='login.php'>Klik di sini untuk login</a>.";
-            } else {
-                $errors[] = "Registrasi gagal, username mungkin sudah terdaftar.";
+            // Validasi username sudah dipakai belum
+            $stmt_check = $conn->prepare("SELECT id FROM users WHERE username = ?");
+            $stmt_check->bind_param("s", $username);
+            $stmt_check->execute();
+            $stmt_check->store_result();
+            if ($stmt_check->num_rows > 0) {
+                $errors[] = "Username sudah terdaftar, silakan gunakan username lain.";
             }
-            $stmt->close();
+            $stmt_check->close();
+
+            // Insert ke DB hanya jika username belum dipakai!
+            if (empty($errors)) {
+                $stmt = $conn->prepare("INSERT INTO users (nama_lengkap, username, password, profile) VALUES (?, ?, ?, ?)");
+                $stmt->bind_param("ssss", $nama, $username, $hash, $relative_path);
+                $stmt->execute();
+
+                if ($stmt->affected_rows > 0) {
+                    $success = "Registrasi berhasil. <a href='login.php'>Klik di sini untuk login</a>.";
+                } else {
+                    $errors[] = "Registrasi gagal, silakan coba lagi.";
+                }
+                $stmt->close();
+            }
         }
     }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="id">
@@ -55,24 +94,28 @@
       <div class="alert alert-danger">
         <ul>
           <?php foreach ($errors as $error): ?>
-            <li><?php echo htmlspecialchars($error)?></li>
+            <li><?php echo htmlspecialchars($error) ?></li>
           <?php endforeach; ?>
         </ul>
       </div>
     <?php endif; ?>
 
     <?php if ($success): ?>
-      <div class="alert alert-success"><?php echo $success?></div>
+      <div class="alert alert-success"><?php echo $success ?></div>
     <?php endif; ?>
 
-    <form method="post" action="">
+    <form method="post" action="" enctype="multipart/form-data">
       <div class="mb-3">
         <label for="nama_lengkap" class="form-label">Nama Lengkap</label>
-        <input type="text" name="nama_lengkap" id="nama_lengkap" class="form-control" required value="<?php echo isset($nama) ? htmlspecialchars($nama) : ''?>">
+        <input type="text" name="nama_lengkap" id="nama_lengkap" class="form-control" required value="<?php echo isset($nama) ? htmlspecialchars($nama) : '' ?>">
+      </div>
+      <div class="mb-3">
+        <label for="profile" class="form-label">Gambar Profil</label>
+        <input type="file" name="profile" id="profile" class="form-control" accept="image/*">
       </div>
       <div class="mb-3">
         <label for="username" class="form-label">Username</label>
-        <input type="text" name="username" id="username" class="form-control" required value="<?php echo isset($username) ? htmlspecialchars($username) : ''?>">
+        <input type="text" name="username" id="username" class="form-control" required value="<?php echo isset($username) ? htmlspecialchars($username) : '' ?>">
       </div>
       <div class="mb-3">
         <label for="password" class="form-label">Password</label>

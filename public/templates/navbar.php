@@ -1,4 +1,16 @@
- <!-- Content Wrapper -->
+<?php
+                                                        // Ambil path root aplikasi (sesuaikan sesuai project-mu)
+    $baseUrl        = '/pemrograman-web/SIBAS_WebApp/'; // TANPA titik!
+    $defaultProfile = $baseUrl . 'vendor/img/undraw_profile.svg';
+
+    // Set profile
+    $profilePath = $defaultProfile;
+    if (! empty($_SESSION['user_profile'])) {
+        $profilePath = $baseUrl . $_SESSION['user_profile'];
+    }
+?>
+
+<!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
 
             <!-- Main Content -->
@@ -177,9 +189,8 @@
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?php echo $_SESSION['user_name']; ?></span>
-                                <img class="img-profile rounded-circle"
-                                    src="./vendor/img/undraw_profile.svg">
-                            </a>
+                                <img class="img-profile rounded-circle" src="<?php echo htmlspecialchars($profilePath); ?>" alt="User Profile">
+                                </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="userDropdown">
@@ -206,4 +217,5 @@
                     </ul>
 
                 </nav>
+
                 <!-- End of Topbar -->

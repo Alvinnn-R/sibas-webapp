@@ -13,7 +13,7 @@
         $username = trim($_POST['username']);
         $password = $_POST['password'];
 
-        $stmt = $conn->prepare("SELECT id, password, role, nama_lengkap FROM users WHERE username = ?");
+        $stmt = $conn->prepare("SELECT id, password, role, nama_lengkap, profile FROM users WHERE username = ?");
         $stmt->bind_param("s", $username);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -21,9 +21,10 @@
         if ($result->num_rows === 1) {
             $row = $result->fetch_assoc();
             if (password_verify($password, $row['password'])) {
-                $_SESSION['user_id']   = $row['id'];
-                $_SESSION['user_role'] = $row['role'];
-                $_SESSION['user_name'] = $row['nama_lengkap'];
+                $_SESSION['user_id']      = $row['id'];
+                $_SESSION['user_role']    = $row['role'];
+                $_SESSION['user_name']    = $row['nama_lengkap'];
+                $_SESSION['user_profile'] = $row['profile'];
                 header("Location: dashboard.php");
                 exit;
             } else {
@@ -54,7 +55,7 @@
       <div class="alert alert-danger">
         <ul>
           <?php foreach ($errors as $error): ?>
-            <li><?php echo htmlspecialchars($error)?></li>
+            <li><?php echo htmlspecialchars($error) ?></li>
           <?php endforeach; ?>
         </ul>
       </div>
@@ -63,7 +64,7 @@
     <form method="post" action="">
       <div class="mb-3">
         <label for="username" class="form-label">Username</label>
-        <input type="text" id="username" name="username" class="form-control" required value="<?php echo isset($username) ? htmlspecialchars($username) : ''?>">
+        <input type="text" id="username" name="username" class="form-control" required value="<?php echo isset($username) ? htmlspecialchars($username) : '' ?>">
       </div>
       <div class="mb-3">
         <label for="password" class="form-label">Password</label>
