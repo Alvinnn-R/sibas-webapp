@@ -92,6 +92,21 @@
                 </div>
             </li>
 
+            <!-- Nav Item - Transaksi Kasir -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseKasir"
+                    aria-expanded="true" aria-controls="collapseKasir">
+                    <i class="fas fa-fw fa-cash-register"></i>
+                    <span>Transaksi Kasir</span>
+                </a>
+                <div id="collapseKasir" class="collapse" aria-labelledby="headingKasir" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="penjualan.php">Penjualan</a>
+                        <a class="collapse-item" href="pembelian.php">Pembelian</a>
+                    </div>
+                </div>
+            </li>
+
             <!-- Divider -->
             <hr class="sidebar-divider">
 

@@ -65,6 +65,33 @@ END
 $$
 DELIMITER ;
 
+-- TRIGGER Koreksi stok saat UPDATE (edit data)
+DELIMITER $$
+CREATE TRIGGER trg_after_update_barang_keluar
+AFTER UPDATE ON barang_keluar
+FOR EACH ROW
+BEGIN
+  IF OLD.id_barang = NEW.id_barang THEN
+    UPDATE barang SET stok = stok + OLD.jumlah - NEW.jumlah WHERE id = NEW.id_barang;
+  ELSE
+    UPDATE barang SET stok = stok + OLD.jumlah WHERE id = OLD.id_barang;
+    UPDATE barang SET stok = stok - NEW.jumlah WHERE id = NEW.id_barang;
+  END IF;
+END
+$$
+DELIMITER ;
+
+-- TRIGGER Tambah stok (balik stok saat DELETE)
+DELIMITER $$
+CREATE TRIGGER trg_after_delete_barang_keluar
+AFTER DELETE ON barang_keluar
+FOR EACH ROW
+BEGIN
+  UPDATE barang SET stok = stok + OLD.jumlah WHERE id = OLD.id_barang;
+END
+$$
+DELIMITER ;
+
 -- --------------------------------------------------------
 
 --
@@ -86,6 +113,36 @@ CREATE TABLE `barang_masuk` (
 DELIMITER $$
 CREATE TRIGGER `trg_after_insert_barang_masuk` AFTER INSERT ON `barang_masuk` FOR EACH ROW BEGIN
   UPDATE barang SET stok = stok + NEW.jumlah WHERE id = NEW.id_barang;
+END
+$$
+DELIMITER ;
+
+-- TRIGGER: Koreksi stok saat UPDATE (edit data)
+DELIMITER $$
+CREATE TRIGGER trg_after_update_barang_masuk
+AFTER UPDATE ON barang_masuk
+FOR EACH ROW
+BEGIN
+  -- Jika id_barang tidak berubah
+  IF OLD.id_barang = NEW.id_barang THEN
+    UPDATE barang SET stok = stok - OLD.jumlah + NEW.jumlah WHERE id = NEW.id_barang;
+  ELSE
+    -- Kembalikan stok lama
+    UPDATE barang SET stok = stok - OLD.jumlah WHERE id = OLD.id_barang;
+    -- Tambahkan stok baru
+    UPDATE barang SET stok = stok + NEW.jumlah WHERE id = NEW.id_barang;
+  END IF;
+END
+$$
+DELIMITER ;
+
+-- TRIGGER: Kurangi stok saat DELETE
+DELIMITER $$
+CREATE TRIGGER trg_after_delete_barang_masuk
+AFTER DELETE ON barang_masuk
+FOR EACH ROW
+BEGIN
+  UPDATE barang SET stok = stok - OLD.jumlah WHERE id = OLD.id_barang;
 END
 $$
 DELIMITER ;
