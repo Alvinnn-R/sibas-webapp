@@ -1,3 +1,13 @@
 # Ignore uploaded files but keep folder structure
 public/upload/profile/*
 !public/upload/profile/.gitkeep
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.temp
