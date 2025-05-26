@@ -7,6 +7,11 @@
         exit;
     }
 
+    if (! isset($_SESSION['user_id']) || ! in_array($_SESSION['user_role'], ['admin', 'petugas'])) {
+        header("Location: dashboard.php");
+        exit;
+    }
+
     // Ambil data untuk dropdown
     $barangList   = $conn->query("SELECT * FROM barang ORDER BY nama_barang ASC");
     $supplierList = $conn->query("SELECT * FROM supplier ORDER BY nama_supplier ASC");
@@ -100,24 +105,24 @@
                     <tbody>
                         <?php $no = 1;foreach ($dataList as $row): ?>
                         <tr>
-                            <td><?php echo $no++?></td>
-                            <td><?php echo htmlspecialchars($row['tanggal'])?></td>
-                            <td><?php echo htmlspecialchars($row['nama_barang'])?></td>
-                            <td><?php echo htmlspecialchars($row['jumlah'])?></td>
-                            <td><?php echo htmlspecialchars($row['nama_supplier'])?></td>
-                            <td><?php echo htmlspecialchars($row['keterangan'])?></td>
+                            <td><?php echo $no++ ?></td>
+                            <td><?php echo htmlspecialchars($row['tanggal']) ?></td>
+                            <td><?php echo htmlspecialchars($row['nama_barang']) ?></td>
+                            <td><?php echo htmlspecialchars($row['jumlah']) ?></td>
+                            <td><?php echo htmlspecialchars($row['nama_supplier']) ?></td>
+                            <td><?php echo htmlspecialchars($row['keterangan']) ?></td>
                             <td>
-                                <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#modalEdit<?php echo $row['id']?>">Edit</button>
+                                <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#modalEdit<?php echo $row['id'] ?>">Edit</button>
                                 <button type="button"
                                     class="btn btn-danger btn-sm btn-hapus"
-                                    data-id="<?php echo $row['id']?>"
-                                    data-nama="<?php echo htmlspecialchars($row['nama_barang'])?>">
+                                    data-id="<?php echo $row['id'] ?>"
+                                    data-nama="<?php echo htmlspecialchars($row['nama_barang']) ?>">
                                     Hapus
                                 </button>
                             </td>
                         </tr>
                         <!-- Modal Edit per-row -->
-                        <div class="modal fade" id="modalEdit<?php echo $row['id']?>" tabindex="-1" role="dialog">
+                        <div class="modal fade" id="modalEdit<?php echo $row['id'] ?>" tabindex="-1" role="dialog">
                             <div class="modal-dialog" role="document">
                               <form method="post">
                                 <div class="modal-content">
@@ -126,40 +131,40 @@
                                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                                     </div>
                                     <div class="modal-body">
-                                        <input type="hidden" name="id" value="<?php echo $row['id']?>">
+                                        <input type="hidden" name="id" value="<?php echo $row['id'] ?>">
                                         <div class="form-group">
                                             <label>Tanggal</label>
-                                            <input type="date" name="tanggal" class="form-control" required value="<?php echo htmlspecialchars($row['tanggal'])?>">
+                                            <input type="date" name="tanggal" class="form-control" required value="<?php echo htmlspecialchars($row['tanggal']) ?>">
                                         </div>
                                         <div class="form-group">
                                             <label>Nama Barang</label>
                                             <select name="id_barang" class="form-control" required>
                                                 <option value="">-- Pilih Barang --</option>
                                                 <?php foreach ($barangList as $barang): ?>
-                                                    <option value="<?php echo $barang['id']?>" <?php echo $barang['id'] == $row['id_barang'] ? 'selected' : ''?>>
-                                                        <?php echo htmlspecialchars($barang['nama_barang'])?>
+                                                    <option value="<?php echo $barang['id'] ?>"<?php echo $barang['id'] == $row['id_barang'] ? 'selected' : '' ?>>
+                                                        <?php echo htmlspecialchars($barang['nama_barang']) ?>
                                                     </option>
                                                 <?php endforeach; ?>
                                             </select>
                                         </div>
                                         <div class="form-group">
                                             <label>Jumlah</label>
-                                            <input type="number" name="jumlah" class="form-control" required value="<?php echo htmlspecialchars($row['jumlah'])?>">
+                                            <input type="number" name="jumlah" class="form-control" required value="<?php echo htmlspecialchars($row['jumlah']) ?>">
                                         </div>
                                         <div class="form-group">
                                             <label>Supplier</label>
                                             <select name="id_supplier" class="form-control" required>
                                                 <option value="">-- Pilih Supplier --</option>
                                                 <?php foreach ($supplierList as $supp): ?>
-                                                    <option value="<?php echo $supp['id']?>" <?php echo $supp['id'] == $row['id_supplier'] ? 'selected' : ''?>>
-                                                        <?php echo htmlspecialchars($supp['nama_supplier'])?>
+                                                    <option value="<?php echo $supp['id'] ?>"<?php echo $supp['id'] == $row['id_supplier'] ? 'selected' : '' ?>>
+                                                        <?php echo htmlspecialchars($supp['nama_supplier']) ?>
                                                     </option>
                                                 <?php endforeach; ?>
                                             </select>
                                         </div>
                                         <div class="form-group">
                                             <label>Keterangan</label>
-                                            <textarea name="keterangan" class="form-control"><?php echo htmlspecialchars($row['keterangan'])?></textarea>
+                                            <textarea name="keterangan" class="form-control"><?php echo htmlspecialchars($row['keterangan']) ?></textarea>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -196,7 +201,7 @@
                         <select name="id_barang" class="form-control" required>
                             <option value="">-- Pilih Barang --</option>
                             <?php foreach ($barangList as $barang): ?>
-                                <option value="<?php echo $barang['id']?>"><?php echo htmlspecialchars($barang['nama_barang'])?></option>
+                                <option value="<?php echo $barang['id'] ?>"><?php echo htmlspecialchars($barang['nama_barang']) ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -209,7 +214,7 @@
                         <select name="id_supplier" class="form-control" required>
                             <option value="">-- Pilih Supplier --</option>
                             <?php foreach ($supplierList as $supp): ?>
-                                <option value="<?php echo $supp['id']?>"><?php echo htmlspecialchars($supp['nama_supplier'])?></option>
+                                <option value="<?php echo $supp['id'] ?>"><?php echo htmlspecialchars($supp['nama_supplier']) ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>

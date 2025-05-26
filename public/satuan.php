@@ -10,6 +10,11 @@
         header("Location: login.php");
         exit;
     }
+
+    if (! isset($_SESSION['user_id']) || ! in_array($_SESSION['user_role'], ['admin', 'petugas'])) {
+        header("Location: dashboard.php");
+        exit;
+    }
     // echo "Selamat datang, " . $_SESSION['user_name'] . " (" . $_SESSION['user_role'] . ")";
 
     // --- PROSES TAMBAH ---

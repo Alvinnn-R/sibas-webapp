@@ -7,6 +7,11 @@
         exit;
     }
 
+    if (! isset($_SESSION['user_id']) || ! in_array($_SESSION['user_role'], ['admin', 'petugas'])) {
+        header("Location: dashboard.php");
+        exit;
+    }
+
     // --- PROSES TAMBAH ---
     if (isset($_POST['tambah'])) {
         $nama_jenis = trim($_POST['nama_jenis']);

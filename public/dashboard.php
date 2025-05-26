@@ -1,354 +1,210 @@
 <?php
-    session_start();
+session_start();
+include '../app/config.php';
+include '../public/templates/header.php';
+include '../public/templates/sidebar.php';
+include '../public/templates/navbar.php';
 
-    include '../app/config.php';
-    // include '../app/auth.php'; // fungsi cek login
-    include '../public/templates/header.php';
-    include '../public/templates/sidebar.php';
-    include '../public/templates/navbar.php';
+if (! isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit;
+}
 
-    // include '../templates/footer.php';
+// Query Data Dashboard
+// Jumlah barang
+$jml_barang    = $conn->query("SELECT COUNT(*) FROM barang")->fetch_row()[0];
+// Jumlah supplier
+$jml_supplier  = $conn->query("SELECT COUNT(*) FROM supplier")->fetch_row()[0];
+// Jumlah user (opsional, hanya admin)
+$jml_user      = $conn->query("SELECT COUNT(*) FROM users")->fetch_row()[0];
 
-    if (! isset($_SESSION['user_id'])) {
-        header("Location: login.php");
-        exit;
-    }
-    // echo "Selamat datang, " . $_SESSION['user_name'] . " (" . $_SESSION['user_role'] . ")";
+// Pendapatan bulan ini (penjualan)
+$now_month     = date('Y-m');
+$sql_bulan     = "SELECT COALESCE(SUM(total),0) FROM penjualan WHERE DATE_FORMAT(tanggal, '%Y-%m') = '$now_month'";
+$pendapatan_bulan = $conn->query($sql_bulan)->fetch_row()[0];
+
+// Pendapatan tahun ini (penjualan)
+$now_year      = date('Y');
+$sql_tahun     = "SELECT COALESCE(SUM(total),0) FROM penjualan WHERE YEAR(tanggal) = '$now_year'";
+$pendapatan_tahun = $conn->query($sql_tahun)->fetch_row()[0];
+
+// Jumlah pembelian bulan ini (untuk pie chart sumber pengeluaran toko)
+$sql_pembelian_bulan = "SELECT COALESCE(SUM(total),0) FROM pembelian WHERE DATE_FORMAT(tanggal, '%Y-%m') = '$now_month'";
+$pembelian_bulan = $conn->query($sql_pembelian_bulan)->fetch_row()[0];
+
+// Penjualan per bulan (12 bulan terakhir) untuk grafik area
+$data_penjualan_bulanan = [];
+for ($i = 11; $i >= 0; $i--) {
+    $label_bulan = date('M Y', strtotime("-$i months"));
+    $bulan_sql = date('Y-m', strtotime("-$i months"));
+    $total     = $conn->query("SELECT COALESCE(SUM(total),0) FROM penjualan WHERE DATE_FORMAT(tanggal, '%Y-%m') = '$bulan_sql'")->fetch_row()[0];
+    $data_penjualan_bulanan[] = [
+        'label' => $label_bulan,
+        'total' => $total
+    ];
+}
 ?>
 <!-- Begin Page Content -->
 <div class="container-fluid">
 
-                    <!-- Page Heading -->
+    <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <!-- Tambahkan ucapan selamat datang di atas judul -->
         <div>
             <h1 class="h3 text-gray-800">Dashboard</h1>
-            <h2 class="mt-4 mb-1">Selamat Datang,                                                  <?php echo htmlspecialchars($_SESSION['user_name']); ?>!</h2>
+            <h2 class="mt-4 mb-1">Selamat Datang, <?php echo htmlspecialchars($_SESSION['user_name']); ?>!</h2>
         </div>
-        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-            <i class="fas fa-download fa-sm text-white-50"></i> Generate Report
+        <!-- Tombol Generate Report (Bisa ganti link/export) -->
+        <a href="laporan.php" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+            <i class="fas fa-file-alt fa-sm text-white-50"></i> Lihat Laporan
         </a>
     </div>
 
-    <!-- Content Row -->
+    <!-- Content Row (Kartu Stat)-->
     <div class="row">
-
-        <!-- Earnings (Monthly) Card Example -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Pendapatan Bulanan</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">Rp6.080.000</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Earnings (Annual) Card Example -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Pendapatan Tahunan</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">Rp71.289.000</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tasks Card Example -->
+        <!-- Total Barang -->
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-info shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Tugas
-                            </div>
-                            <div class="row no-gutters align-items-center">
-                                <div class="col-auto">
-                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
-                                </div>
-                                <div class="col">
-                                    <div class="progress progress-sm mr-2">
-                                        <div class="progress-bar bg-info" role="progressbar"
-                                            style="width: 50%" aria-valuenow="50" aria-valuemin="0"
-                                            aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
-                        </div>
+                <div class="card-body d-flex align-items-center">
+                    <div class="mr-3">
+                        <i class="fas fa-box fa-2x text-gray-300"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Barang</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $jml_barang ?></div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- Pending Requests Card Example -->
+        <!-- Total Supplier -->
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Permintaan Tertunda</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-comments fa-2x text-gray-300"></i>
-                        </div>
+                <div class="card-body d-flex align-items-center">
+                    <div class="mr-3">
+                        <i class="fas fa-truck fa-2x text-gray-300"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Total Supplier</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $jml_supplier ?></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Pendapatan Bulan Ini -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center">
+                    <div class="mr-3">
+                        <i class="fas fa-cash-register fa-2x text-gray-300"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Pendapatan Bulan Ini</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">Rp<?= number_format($pendapatan_bulan,0,',','.') ?></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Pendapatan Tahun Ini -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body d-flex align-items-center">
+                    <div class="mr-3">
+                        <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Pendapatan Tahun Ini</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">Rp<?= number_format($pendapatan_tahun,0,',','.') ?></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-                    <!-- Content Row -->
-
-                    <div class="row">
-
-                        <!-- Area Chart -->
-                        <div class="col-xl-8 col-lg-7">
-                            <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
-                                <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
-                                    <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                            aria-labelledby="dropdownMenuLink">
-                                            <div class="dropdown-header">Dropdown Header:</div>
-                                            <a class="dropdown-item" href="#">Action</a>
-                                            <a class="dropdown-item" href="#">Another action</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#">Something else here</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Card Body -->
-                                <div class="card-body">
-                                    <div class="chart-area">
-                                        <canvas id="myAreaChart"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Pie Chart -->
-                        <div class="col-xl-4 col-lg-5">
-                            <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
-                                <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Revenue Sources</h6>
-                                    <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                            aria-labelledby="dropdownMenuLink">
-                                            <div class="dropdown-header">Dropdown Header:</div>
-                                            <a class="dropdown-item" href="#">Action</a>
-                                            <a class="dropdown-item" href="#">Another action</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#">Something else here</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Card Body -->
-                                <div class="card-body">
-                                    <div class="chart-pie pt-4 pb-2">
-                                        <canvas id="myPieChart"></canvas>
-                                    </div>
-                                    <div class="mt-4 text-center small">
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-primary"></i> Direct
-                                        </span>
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-success"></i> Social
-                                        </span>
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-info"></i> Referral
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Content Row -->
-                    <div class="row">
-
-                        <!-- Content Column -->
-                        <div class="col-lg-6 mb-4">
-
-                            <!-- Project Card Example -->
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Projects</h6>
-                                </div>
-                                <div class="card-body">
-                                    <h4 class="small font-weight-bold">Server Migration <span
-                                            class="float-right">20%</span></h4>
-                                    <div class="progress mb-4">
-                                        <div class="progress-bar bg-danger" role="progressbar" style="width: 20%"
-                                            aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    <h4 class="small font-weight-bold">Sales Tracking <span
-                                            class="float-right">40%</span></h4>
-                                    <div class="progress mb-4">
-                                        <div class="progress-bar bg-warning" role="progressbar" style="width: 40%"
-                                            aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    <h4 class="small font-weight-bold">Customer Database <span
-                                            class="float-right">60%</span></h4>
-                                    <div class="progress mb-4">
-                                        <div class="progress-bar" role="progressbar" style="width: 60%"
-                                            aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    <h4 class="small font-weight-bold">Payout Details <span
-                                            class="float-right">80%</span></h4>
-                                    <div class="progress mb-4">
-                                        <div class="progress-bar bg-info" role="progressbar" style="width: 80%"
-                                            aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    <h4 class="small font-weight-bold">Account Setup <span
-                                            class="float-right">Complete!</span></h4>
-                                    <div class="progress">
-                                        <div class="progress-bar bg-success" role="progressbar" style="width: 100%"
-                                            aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Color System -->
-                            <div class="row">
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-primary text-white shadow">
-                                        <div class="card-body">
-                                            Primary
-                                            <div class="text-white-50 small">#4e73df</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-success text-white shadow">
-                                        <div class="card-body">
-                                            Success
-                                            <div class="text-white-50 small">#1cc88a</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-info text-white shadow">
-                                        <div class="card-body">
-                                            Info
-                                            <div class="text-white-50 small">#36b9cc</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-warning text-white shadow">
-                                        <div class="card-body">
-                                            Warning
-                                            <div class="text-white-50 small">#f6c23e</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-danger text-white shadow">
-                                        <div class="card-body">
-                                            Danger
-                                            <div class="text-white-50 small">#e74a3b</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-secondary text-white shadow">
-                                        <div class="card-body">
-                                            Secondary
-                                            <div class="text-white-50 small">#858796</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-light text-black shadow">
-                                        <div class="card-body">
-                                            Light
-                                            <div class="text-black-50 small">#f8f9fc</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-dark text-white shadow">
-                                        <div class="card-body">
-                                            Dark
-                                            <div class="text-white-50 small">#5a5c69</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="col-lg-6 mb-4">
-
-                            <!-- Illustrations -->
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Illustrations</h6>
-                                </div>
-                                <div class="card-body">
-                                    <div class="text-center">
-                                        <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;"
-                                            src="img/undraw_posting_photo.svg" alt="...">
-                                    </div>
-                                    <p>Add some quality, svg illustrations to your project courtesy of <a
-                                            target="_blank" rel="nofollow" href="https://undraw.co/">unDraw</a>, a
-                                        constantly updated collection of beautiful svg images that you can use
-                                        completely free and without attribution!</p>
-                                    <a target="_blank" rel="nofollow" href="https://undraw.co/">Browse Illustrations on
-                                        unDraw &rarr;</a>
-                                </div>
-                            </div>
-
-                            <!-- Approach -->
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Development Approach</h6>
-                                </div>
-                                <div class="card-body">
-                                    <p>SB Admin 2 makes extensive use of Bootstrap 4 utility classes in order to reduce
-                                        CSS bloat and poor page performance. Custom CSS classes are used to create
-                                        custom components and custom utility classes.</p>
-                                    <p class="mb-0">Before working with this theme, you should become familiar with the
-                                        Bootstrap framework, especially the utility classes.</p>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-
+    <!-- Content Row (Charts)-->
+    <div class="row">
+        <!-- Area Chart Penjualan Bulanan -->
+        <div class="col-xl-8 col-lg-7">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Grafik Penjualan 12 Bulan Terakhir</h6>
                 </div>
-                <!-- /.container-fluid -->
+                <div class="card-body">
+                    <div class="chart-area">
+                        <canvas id="areaPenjualan"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Pie Chart (Perbandingan Penjualan vs Pembelian Bulan Ini) -->
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Perbandingan Bulan Ini</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-pie pt-4 pb-2">
+                        <canvas id="piePendapatan"></canvas>
+                    </div>
+                    <div class="mt-4 text-center small">
+                        <span class="mr-2"><i class="fas fa-circle text-success"></i> Penjualan</span>
+                        <span class="mr-2"><i class="fas fa-circle text-danger"></i> Pembelian</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <?php include '../public/templates/footer.php'; ?>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+/* Area Chart Penjualan Bulanan */
+const areaPenjualan = document.getElementById('areaPenjualan').getContext('2d');
+const areaChart = new Chart(areaPenjualan, {
+    type: 'line',
+    data: {
+        labels: <?= json_encode(array_column($data_penjualan_bulanan, 'label')) ?>,
+        datasets: [{
+            label: 'Total Penjualan',
+            data: <?= json_encode(array_column($data_penjualan_bulanan, 'total')) ?>,
+            backgroundColor: 'rgba(78, 115, 223, 0.2)',
+            borderColor: 'rgba(78, 115, 223, 1)',
+            borderWidth: 2,
+            pointRadius: 3,
+            pointBackgroundColor: 'rgba(78, 115, 223, 1)',
+            fill: true,
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: { beginAtZero: true }
+        }
+    }
+});
+
+/* Pie Chart: Penjualan vs Pembelian Bulan Ini */
+const piePendapatan = document.getElementById('piePendapatan').getContext('2d');
+const pieChart = new Chart(piePendapatan, {
+    type: 'pie',
+    data: {
+        labels: ['Penjualan', 'Pembelian'],
+        datasets: [{
+            data: [
+                <?= (int) $pendapatan_bulan ?>,
+                <?= (int) $pembelian_bulan ?>
+            ],
+            backgroundColor: ['#1cc88a', '#e74a3b']
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            }
+        }
+    }
+});
+</script>

@@ -1,0 +1,36 @@
+body {
+  min-height: 100vh;
+  background: url("../assets/bg-img.png") no-repeat center center fixed;
+  background-size: cover;
+  position: relative;
+}
+.overlay {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(44, 62, 80, 0.5); /* gelap transparan */
+  z-index: 0;
+}
+.card-login {
+  z-index: 1;
+  background: rgba(161, 211, 226, 0.96) !important;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(44, 62, 80, 0.1);
+  border: none;
+}
+.logo-sibas {
+  width: 150px;
+  height: 110px;
+  object-fit: contain;
+  margin-bottom: 12px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+@media (max-width: 600px) {
+  .card-login {
+    width: 100% !important;
+  }
+}

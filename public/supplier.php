@@ -7,6 +7,11 @@
         exit;
     }
 
+    if (! isset($_SESSION['user_id']) || ! in_array($_SESSION['user_role'], ['admin', 'petugas'])) {
+        header("Location: dashboard.php");
+        exit;
+    }
+
     // --- PROSES TAMBAH ---
     if (isset($_POST['tambah'])) {
         $nama_supplier = trim($_POST['nama_supplier']);
@@ -80,22 +85,22 @@
                         <?php $no = 1;
                         foreach ($supplierList as $row): ?>
                             <tr>
-                                <td><?php echo $no++?></td>
-                                <td><?php echo htmlspecialchars($row['nama_supplier'])?></td>
-                                <td><?php echo htmlspecialchars($row['alamat'])?></td>
+                                <td><?php echo $no++ ?></td>
+                                <td><?php echo htmlspecialchars($row['nama_supplier']) ?></td>
+                                <td><?php echo htmlspecialchars($row['alamat']) ?></td>
                                 <td>
                                     <!-- Tombol Edit: Modal trigger -->
-                                    <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#modalEditSupplier<?php echo $row['id']?>">Edit</button>
+                                    <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#modalEditSupplier<?php echo $row['id'] ?>">Edit</button>
                                     <button type="button"
                                             class="btn btn-danger btn-sm btn-hapus"
-                                            data-id="<?php echo $row['id'];?>"
-                                            data-nama="<?php echo htmlspecialchars($row['nama_supplier']);?>">
+                                            data-id="<?php echo $row['id']; ?>"
+                                            data-nama="<?php echo htmlspecialchars($row['nama_supplier']); ?>">
                                         Hapus
                                     </button>
                                 </td>
                             </tr>
                             <!-- Modal Edit per-row -->
-                            <div class="modal fade" id="modalEditSupplier<?php echo $row['id']?>" tabindex="-1" role="dialog">
+                            <div class="modal fade" id="modalEditSupplier<?php echo $row['id'] ?>" tabindex="-1" role="dialog">
                                 <div class="modal-dialog" role="document">
                                     <form method="post">
                                         <div class="modal-content">
@@ -104,14 +109,14 @@
                                                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                                             </div>
                                             <div class="modal-body">
-                                                <input type="hidden" name="id" value="<?php echo $row['id']?>">
+                                                <input type="hidden" name="id" value="<?php echo $row['id'] ?>">
                                                 <div class="form-group">
                                                     <label>Nama Supplier</label>
-                                                    <input type="text" name="nama_supplier" class="form-control" required value="<?php echo htmlspecialchars($row['nama_supplier'])?>">
+                                                    <input type="text" name="nama_supplier" class="form-control" required value="<?php echo htmlspecialchars($row['nama_supplier']) ?>">
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Alamat</label>
-                                                    <input type="text" name="alamat" class="form-control" required value="<?php echo htmlspecialchars($row['alamat'])?>">
+                                                    <input type="text" name="alamat" class="form-control" required value="<?php echo htmlspecialchars($row['alamat']) ?>">
                                                 </div>
                                             </div>
                                             <div class="modal-footer">

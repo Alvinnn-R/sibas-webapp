@@ -2,6 +2,12 @@
     session_start();
     include '../app/config.php';
 
+    // Hanya admin yang boleh akses halaman ini
+    if (! isset($_SESSION['user_id']) || ! in_array($_SESSION['user_role'], ['admin', 'petugas'])) {
+        header("Location: dashboard.php");
+        exit;
+    }
+
     // --- FUNCTION: Generate kode barang ---
     function generateKodeBarang($conn)
     {
@@ -114,35 +120,35 @@
                     <tbody>
                         <?php $no = 1;foreach ($barangList as $row): ?>
                         <tr>
-                            <td><?php echo $no++?></td>
-                            <td><?php echo htmlspecialchars($row['kode_barang'])?></td>
-                            <td><?php echo htmlspecialchars($row['nama_barang'])?></td>
-                            <td><?php echo htmlspecialchars($row['nama_satuan'])?></td>
-                            <td><?php echo htmlspecialchars($row['nama_jenis'])?></td>
-                            <td><?php echo number_format($row['harga_jual'])?></td>
-                            <td><?php echo number_format($row['harga_beli'])?></td>
-                            <td><?php echo $row['stok']?></td>
+                            <td><?php echo $no++ ?></td>
+                            <td><?php echo htmlspecialchars($row['kode_barang']) ?></td>
+                            <td><?php echo htmlspecialchars($row['nama_barang']) ?></td>
+                            <td><?php echo htmlspecialchars($row['nama_satuan']) ?></td>
+                            <td><?php echo htmlspecialchars($row['nama_jenis']) ?></td>
+                            <td><?php echo number_format($row['harga_jual']) ?></td>
+                            <td><?php echo number_format($row['harga_beli']) ?></td>
+                            <td><?php echo $row['stok'] ?></td>
                             <td>
-                                <span class="badge badge-<?php echo $row['status'] == '1' ? 'success' : 'secondary'?>">
-                                    <?php echo $row['status'] == '1' ? 'Aktif' : 'Nonaktif'?>
+                                <span class="badge badge-<?php echo $row['status'] == '1' ? 'success' : 'secondary' ?>">
+                                    <?php echo $row['status'] == '1' ? 'Aktif' : 'Nonaktif' ?>
                                 </span>
                             </td>
                             <td>
                                 <!-- Tombol Edit -->
-                                <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#modalEditBarang<?php echo $row['id']?>">Edit</button>
+                                <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#modalEditBarang<?php echo $row['id'] ?>">Edit</button>
                                 <!-- Tombol Hapus -->
                                 <button type="button" class="btn btn-danger btn-sm btn-hapus"
-                                        data-id="<?php echo $row['id'];?>"
-                                        data-nama="<?php echo htmlspecialchars($row['nama_barang']);?>">
+                                        data-id="<?php echo $row['id']; ?>"
+                                        data-nama="<?php echo htmlspecialchars($row['nama_barang']); ?>">
                                     Hapus
                                 </button>
                             </td>
                         </tr>
                         <!-- Modal Edit Barang -->
-                        <div class="modal fade" id="modalEditBarang<?php echo $row['id']?>" tabindex="-1" role="dialog">
+                        <div class="modal fade" id="modalEditBarang<?php echo $row['id'] ?>" tabindex="-1" role="dialog">
                             <div class="modal-dialog" role="document">
                                 <form method="post">
-                                    <input type="hidden" name="id" value="<?php echo $row['id']?>">
+                                    <input type="hidden" name="id" value="<?php echo $row['id'] ?>">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title">Edit Barang</h5>
@@ -151,11 +157,11 @@
                                         <div class="modal-body">
                                             <div class="form-group">
                                                 <label>Kode Barang</label>
-                                                <input type="text" class="form-control" value="<?php echo htmlspecialchars($row['kode_barang'])?>" readonly>
+                                                <input type="text" class="form-control" value="<?php echo htmlspecialchars($row['kode_barang']) ?>" readonly>
                                             </div>
                                             <div class="form-group">
                                                 <label>Nama Barang</label>
-                                                <input type="text" name="nama_barang" class="form-control" required value="<?php echo htmlspecialchars($row['nama_barang'])?>">
+                                                <input type="text" name="nama_barang" class="form-control" required value="<?php echo htmlspecialchars($row['nama_barang']) ?>">
                                             </div>
                                             <div class="form-group">
                                                 <label>Satuan</label>
@@ -163,7 +169,7 @@
                                                     <?php
                                                         $satuanOpt = $conn->query("SELECT * FROM satuan ORDER BY nama_satuan ASC");
                                                     while ($sat = $satuanOpt->fetch_assoc()): ?>
-                                                        <option value="<?php echo $sat['id']?>" <?php echo $row['id_satuan'] == $sat['id'] ? 'selected' : ''?>><?php echo htmlspecialchars($sat['nama_satuan'])?></option>
+                                                        <option value="<?php echo $sat['id'] ?>"<?php echo $row['id_satuan'] == $sat['id'] ? 'selected' : '' ?>><?php echo htmlspecialchars($sat['nama_satuan']) ?></option>
                                                     <?php endwhile; ?>
                                                 </select>
                                             </div>
@@ -173,27 +179,27 @@
                                                     <?php
                                                         $jenisOpt = $conn->query("SELECT * FROM jenis_barang ORDER BY nama_jenis ASC");
                                                     while ($jen = $jenisOpt->fetch_assoc()): ?>
-                                                        <option value="<?php echo $jen['id']?>" <?php echo $row['id_jenis'] == $jen['id'] ? 'selected' : ''?>><?php echo htmlspecialchars($jen['nama_jenis'])?></option>
+                                                        <option value="<?php echo $jen['id'] ?>"<?php echo $row['id_jenis'] == $jen['id'] ? 'selected' : '' ?>><?php echo htmlspecialchars($jen['nama_jenis']) ?></option>
                                                     <?php endwhile; ?>
                                                 </select>
                                             </div>
                                             <div class="form-group">
                                                 <label>Harga Jual</label>
-                                                <input type="number" name="harga_jual" class="form-control" required value="<?php echo $row['harga_jual']?>">
+                                                <input type="number" name="harga_jual" class="form-control" required value="<?php echo $row['harga_jual'] ?>">
                                             </div>
                                             <div class="form-group">
                                                 <label>Harga Beli</label>
-                                                <input type="number" name="harga_beli" class="form-control" required value="<?php echo $row['harga_beli']?>">
+                                                <input type="number" name="harga_beli" class="form-control" required value="<?php echo $row['harga_beli'] ?>">
                                             </div>
                                             <div class="form-group">
                                                 <label>Stok</label>
-                                                <input type="number" name="stok" class="form-control" required value="<?php echo $row['stok']?>">
+                                                <input type="number" name="stok" class="form-control" required value="<?php echo $row['stok'] ?>">
                                             </div>
                                             <div class="form-group">
                                                 <label>Status</label>
                                                 <select name="status" class="form-control">
-                                                    <option value="1" <?php echo $row['status'] == '1' ? 'selected' : ''?>>Aktif</option>
-                                                    <option value="0" <?php echo $row['status'] == '0' ? 'selected' : ''?>>Nonaktif</option>
+                                                    <option value="1"                                                                                                                                           <?php echo $row['status'] == '1' ? 'selected' : '' ?>>Aktif</option>
+                                                    <option value="0"                                                                                                                                           <?php echo $row['status'] == '0' ? 'selected' : '' ?>>Nonaktif</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -225,7 +231,7 @@
                         <?php $autoKode = generateKodeBarang($conn); ?>
                         <div class="form-group">
                             <label>Kode Barang</label>
-                            <input type="text" name="kode_barang" class="form-control" value="<?php echo $autoKode?>" readonly required>
+                            <input type="text" name="kode_barang" class="form-control" value="<?php echo $autoKode ?>" readonly required>
                         </div>
                         <div class="form-group">
                             <label>Nama Barang</label>
@@ -236,7 +242,7 @@
                             <select name="id_satuan" class="form-control" required>
                                 <option value="">Pilih Satuan</option>
                                 <?php foreach ($satuanList as $sat): ?>
-                                    <option value="<?php echo $sat['id']?>"><?php echo htmlspecialchars($sat['nama_satuan'])?></option>
+                                    <option value="<?php echo $sat['id'] ?>"><?php echo htmlspecialchars($sat['nama_satuan']) ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -245,7 +251,7 @@
                             <select name="id_jenis" class="form-control" required>
                                 <option value="">Pilih Jenis</option>
                                 <?php foreach ($jenisList as $jen): ?>
-                                    <option value="<?php echo $jen['id']?>"><?php echo htmlspecialchars($jen['nama_jenis'])?></option>
+                                    <option value="<?php echo $jen['id'] ?>"><?php echo htmlspecialchars($jen['nama_jenis']) ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>

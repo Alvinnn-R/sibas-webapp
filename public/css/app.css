@@ -1,0 +1,51 @@
+.nota-struk {
+  font-family: monospace, "Courier New", Courier;
+  width: 210px; /* ukuran thermal printer 58mm */
+  font-size: 11px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.nota-title {
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 2px;
+}
+.nota-info,
+.nota-total {
+  font-size: 11px;
+}
+.nota-tabel {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+.nota-tabel th,
+.nota-tabel td {
+  border: none;
+  padding: 0 2px;
+  vertical-align: top;
+}
+@media print {
+  body {
+    margin: 0;
+    padding: 0;
+    background: #fff;
+  }
+  .nota-struk {
+    margin: 0 auto;
+    width: 210px !important;
+    font-size: 11px !important;
+  }
+  .nota-print-area,
+  .nota-struk {
+    box-shadow: none;
+    border: none;
+    color: #000;
+  }
+  .nota-struk hr {
+    margin: 4px 0;
+  }
+}
+

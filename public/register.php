@@ -83,58 +83,60 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Register - SIBAS</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="./css/style.css">
 </head>
-<body class="bg-light">
+<body>
+  <div class="overlay"></div>
+  <div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="card card-login shadow-sm p-4" style="width: 400px;">
+      <!-- Logo di atas -->
+      <img src="./assets/logo_sibas.png" class="logo-sibas" alt="Logo SIBAS">
+      <!-- <h3 class="mb-2 text-center">Daftar Akun Baru</h3> -->
 
-<div class="container d-flex justify-content-center align-items-center vh-100">
-  <div class="card shadow-sm p-4" style="width: 400px;">
-    <h3 class="mb-4 text-center">Daftar Akun Baru</h3>
+      <?php if ($errors): ?>
+        <div class="alert alert-danger">
+          <ul>
+            <?php foreach ($errors as $error): ?>
+              <li><?php echo htmlspecialchars($error) ?></li>
+            <?php endforeach; ?>
+          </ul>
+        </div>
+      <?php endif; ?>
 
-    <?php if ($errors): ?>
-      <div class="alert alert-danger">
-        <ul>
-          <?php foreach ($errors as $error): ?>
-            <li><?php echo htmlspecialchars($error) ?></li>
-          <?php endforeach; ?>
-        </ul>
-      </div>
-    <?php endif; ?>
+      <?php if ($success): ?>
+        <div class="alert alert-success"><?php echo $success ?></div>
+      <?php endif; ?>
 
-    <?php if ($success): ?>
-      <div class="alert alert-success"><?php echo $success ?></div>
-    <?php endif; ?>
+      <form method="post" action="" enctype="multipart/form-data">
+        <div class="mb-3">
+          <label for="nama_lengkap" class="form-label">Nama Lengkap</label>
+          <input type="text" name="nama_lengkap" id="nama_lengkap" class="form-control" required value="<?php echo isset($nama) ? htmlspecialchars($nama) : '' ?>">
+        </div>
+        <div class="mb-3">
+          <label for="profile" class="form-label">Gambar Profil</label>
+          <input type="file" name="profile" id="profile" class="form-control" accept="image/*">
+        </div>
+        <div class="mb-3">
+          <label for="username" class="form-label">Username</label>
+          <input type="text" name="username" id="username" class="form-control" required value="<?php echo isset($username) ? htmlspecialchars($username) : '' ?>">
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input type="password" name="password" id="password" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label for="password_confirm" class="form-label">Konfirmasi Password</label>
+          <input type="password" name="password_confirm" id="password_confirm" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-success w-100">Daftar</button>
+      </form>
 
-    <form method="post" action="" enctype="multipart/form-data">
-      <div class="mb-3">
-        <label for="nama_lengkap" class="form-label">Nama Lengkap</label>
-        <input type="text" name="nama_lengkap" id="nama_lengkap" class="form-control" required value="<?php echo isset($nama) ? htmlspecialchars($nama) : '' ?>">
+      <hr>
+      <div class="text-center">
+        Sudah punya akun? <a href="login.php">Login di sini</a>
       </div>
-      <div class="mb-3">
-        <label for="profile" class="form-label">Gambar Profil</label>
-        <input type="file" name="profile" id="profile" class="form-control" accept="image/*">
-      </div>
-      <div class="mb-3">
-        <label for="username" class="form-label">Username</label>
-        <input type="text" name="username" id="username" class="form-control" required value="<?php echo isset($username) ? htmlspecialchars($username) : '' ?>">
-      </div>
-      <div class="mb-3">
-        <label for="password" class="form-label">Password</label>
-        <input type="password" name="password" id="password" class="form-control" required>
-      </div>
-      <div class="mb-3">
-        <label for="password_confirm" class="form-label">Konfirmasi Password</label>
-        <input type="password" name="password_confirm" id="password_confirm" class="form-control" required>
-      </div>
-      <button type="submit" class="btn btn-success w-100">Daftar</button>
-    </form>
-
-    <hr>
-    <div class="text-center">
-      Sudah punya akun? <a href="login.php">Login di sini</a>
     </div>
   </div>
-</div>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

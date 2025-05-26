@@ -7,6 +7,11 @@
         exit;
     }
 
+    if (! isset($_SESSION['user_id']) || ! in_array($_SESSION['user_role'], ['admin', 'petugas'])) {
+        header("Location: dashboard.php");
+        exit;
+    }
+
     // Ambil data untuk dropdown
     $barangList = $conn->query("SELECT * FROM barang ORDER BY nama_barang ASC");
 
