@@ -275,7 +275,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `profile`, `nama_lengkap`, `username`, `password`, `role`, `created_at`) VALUES
-(1, NULL, 'Alvin Rama', 'admin1', '$2y$10$8fz0vQPifNu7vFO.Fz1.ze/A7Ceg/Ky7FzM0pTdOK1U/hrsoRsOf6', 'viewer', '2025-05-19 14:09:54');
+(1, NULL, 'Riky Hermanto', 'riky', '$2y$10$4SWOXEtw7cekwymBGDnRbegrflGpgw9abywKsCBx4vUtzPz0EMB7y', 'petugas', '2025-05-19 14:09:54'),
+(2, NULL, 'Alvin Rama', 'alvin', '$2y$10$FfT1WI9lXYfPT/JA0pgY7.rpcRArsAm7U79/APsdQvLpmpsbjtBfu', 'admin', '2025-05-26 18:26:59');
 
 --
 -- Indexes for dumped tables
