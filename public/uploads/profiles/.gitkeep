@@ -1,0 +1,6 @@
+# Ignore image files in upload folders
+upload/profile/*.png
+upload/profile/*.jpg
+upload/profile/*.jpeg
+upload/profile/*.gif
+upload/profile/*.webp
