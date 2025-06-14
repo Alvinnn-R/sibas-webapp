@@ -228,11 +228,11 @@
 	                                <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modalDetail<?php echo $row['id'] ?>">Lihat</button>
 	                            </td>
 	                            <td width="170">
-                                    <button class="btn btn-secondary btn-sm btn-cetak" data-id="<?php echo $row['id'] ?>">Cetak Nota</button>
 	                                <button type="button" class="btn btn-danger btn-sm btn-hapus"
 	                                    data-id="<?php echo $row['id'] ?>" data-nama="Nota #<?php echo $row['id'] ?>">
 	                                    Hapus
 	                                </button>
+                                    <button class="btn btn-secondary btn-sm btn-cetak" data-id="<?php echo $row['id'] ?>">Cetak Nota</button>
 	                            </td>
 	                        </tr>
 	                        <?php endforeach; ?>
@@ -254,12 +254,12 @@
 	                <div class="modal-body">
 	                    <div class="row mb-3">
 	                        <div class="col-md-6">
-	                            <strong>Tanggal:</strong>	                                                     	                                                     	                                                     	                                                     	                                                      <?php echo $row['tanggal'] ?><br>
-	                            <strong>Supplier:</strong>	                                                      	                                                      	                                                      	                                                      	                                                       <?php echo htmlspecialchars($row['nama_supplier']) ?><br>
-	                            <strong>User Input:</strong>	                                                        	                                                        	                                                        	                                                        	                                                         <?php echo htmlspecialchars($row['nama_lengkap']) ?>
+	                            <strong>Tanggal:</strong>	                                                     	                                                     	                                                     	                                                     	                                                     	                                                      <?php echo $row['tanggal'] ?><br>
+	                            <strong>Supplier:</strong>	                                                      	                                                      	                                                      	                                                      	                                                      	                                                       <?php echo htmlspecialchars($row['nama_supplier']) ?><br>
+	                            <strong>User Input:</strong>	                                                        	                                                        	                                                        	                                                        	                                                        	                                                         <?php echo htmlspecialchars($row['nama_lengkap']) ?>
 	                        </div>
 	                        <div class="col-md-6">
-	                            <strong>Total:</strong>	                                                   	                                                   	                                                   	                                                   	                                                    <?php echo number_format($row['total']) ?><br>
+	                            <strong>Total:</strong>	                                                   	                                                   	                                                   	                                                   	                                                   	                                                    <?php echo number_format($row['total']) ?><br>
 	                        </div>
 	                    </div>
 	                    <table class="table table-bordered">
@@ -306,9 +306,9 @@
             </div>
             <div class="nota-info">
                 <div>No Nota: <b><?php echo $row['id']; ?></b></div>
-                <div>Tanggal:                                                                                        <?php echo $row['tanggal']; ?></div>
-                <div>Supplier:                                                                                           <?php echo htmlspecialchars($row['nama_supplier']); ?></div>
-                <div>User:                                                                               <?php echo htmlspecialchars($row['nama_lengkap']); ?></div>
+                <div>Tanggal:                                                                                                                     <?php echo $row['tanggal']; ?></div>
+                <div>Supplier:                                                                                                                         <?php echo htmlspecialchars($row['nama_supplier']); ?></div>
+                <div>User:                                                                                                         <?php echo htmlspecialchars($row['nama_lengkap']); ?></div>
             </div>
             <hr>
             <table class="nota-tabel">

@@ -229,27 +229,27 @@
                             foreach ($dataList as $row):
                                 $kembalian = $row['dibayar'] - $row['total'];
                             ?>
-		                            <tr>
-		                                <td><?php echo $no++ ?></td>
-		                                <td><?php echo htmlspecialchars($row['tanggal']) ?></td>
-		                                <td><?php echo htmlspecialchars($row['nama_lengkap']) ?></td>
-		                                <td><?php echo number_format($row['total']) ?></td>
-		                                <td><?php echo number_format($row['dibayar']) ?></td>
-		                                <td><?php echo number_format($kembalian) ?></td>
-		                                <td>
-		                                    <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modalDetail<?php echo $row['id'] ?>">Lihat</button>
-		                                </td>
-		                                <td>
-		                                    <button type="button" class="btn btn-danger btn-sm btn-hapus"
-		                                        data-id="<?php echo $row['id'] ?>" data-nama="Nota #<?php echo $row['id'] ?>">
-		                                        Hapus
-		                                    </button>
-		                                    <button type="button" class="btn btn-secondary btn-sm btn-cetak-nota"
-		                                        data-id="<?php echo $row['id'] ?>">Cetak Nota
-		                                    </button>
-		                                </td>
-		                            </tr>
-		                        <?php endforeach; ?>
+				                            <tr>
+				                                <td><?php echo $no++ ?></td>
+				                                <td><?php echo htmlspecialchars($row['tanggal']) ?></td>
+				                                <td><?php echo htmlspecialchars($row['nama_lengkap']) ?></td>
+				                                <td><?php echo number_format($row['total']) ?></td>
+				                                <td><?php echo number_format($row['dibayar']) ?></td>
+				                                <td><?php echo number_format($kembalian) ?></td>
+				                                <td>
+				                                    <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modalDetail<?php echo $row['id'] ?>">Lihat</button>
+				                                </td>
+				                                <td>
+				                                    <button type="button" class="btn btn-danger btn-sm btn-hapus"
+				                                        data-id="<?php echo $row['id'] ?>" data-nama="Nota #<?php echo $row['id'] ?>">
+				                                        Hapus
+				                                    </button>
+				                                    <button type="button" class="btn btn-secondary btn-sm btn-cetak-nota"
+				                                        data-id="<?php echo $row['id'] ?>">Cetak Nota
+				                                    </button>
+				                                </td>
+				                            </tr>
+				                        <?php endforeach; ?>
                     </tbody>
                 </table>
             </div>
@@ -260,48 +260,48 @@
     <?php foreach ($dataList as $row):
             $kembalian = $row['dibayar'] - $row['total'];
         ?>
-		        <div class="modal fade" id="modalDetail<?php echo $row['id'] ?>" tabindex="-1" role="dialog">
-		            <div class="modal-dialog modal-lg" role="document">
-		                <div class="modal-content">
-		                    <div class="modal-header">
-		                        <h5 class="modal-title">Detail Penjualan #<?php echo $row['id'] ?></h5>
-		                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-		                    </div>
-		                    <div class="modal-body">
-		                        <div class="row mb-3">
-		                            <div class="col-md-6">
-		                                <strong>Tanggal:</strong>		                                                         	                                                          <?php echo $row['tanggal'] ?><br>
-		                                <strong>Kasir:</strong>		                                                       	                                                        <?php echo htmlspecialchars($row['nama_lengkap']) ?>
-		                            </div>
-		                            <div class="col-md-6">
-		                                <strong>Total:</strong>		                                                       	                                                        <?php echo number_format($row['total']) ?><br>
-		                                <strong>Dibayar:</strong>		                                                         	                                                          <?php echo number_format($row['dibayar']) ?><br>
-		                                <strong>Kembalian:</strong>		                                                           	                                                            <?php echo number_format($kembalian) ?>
-		                            </div>
-		                        </div>
-		                        <table class="table table-bordered">
-		                            <thead>
-		                                <tr>
-		                                    <th>No</th>
-		                                    <th>Barang</th>
-		                                    <th>Harga</th>
-		                                    <th>Jumlah</th>
-		                                    <th>Subtotal</th>
-		                                </tr>
-		                            </thead>
-		                            <tbody>
-		                                <?php
-                                                $no_detail = 1;
-                                                foreach (getDetailPenjualan($conn, $row['id']) as $d):
-                                            ?>
-		                                    <tr>
-		                                        <td><?php echo $no_detail++ ?></td>
-		                                        <td><?php echo htmlspecialchars($d['nama_barang']) ?></td>
-		                                        <td><?php echo number_format($d['harga_jual']) ?></td>
-		                                        <td><?php echo $d['jumlah'] ?></td>
-		                                        <td><?php echo number_format($d['subtotal']) ?></td>
-		                                    </tr>
-		                                <?php endforeach; ?>
+				        <div class="modal fade" id="modalDetail<?php echo $row['id'] ?>" tabindex="-1" role="dialog">
+				            <div class="modal-dialog modal-lg" role="document">
+				                <div class="modal-content">
+				                    <div class="modal-header">
+				                        <h5 class="modal-title">Detail Penjualan #<?php echo $row['id'] ?></h5>
+				                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+				                    </div>
+				                    <div class="modal-body">
+				                        <div class="row mb-3">
+				                            <div class="col-md-6">
+				                                <strong>Tanggal:</strong>				                                                         			                                                         		                                                         	                                                          <?php echo $row['tanggal'] ?><br>
+				                                <strong>Kasir:</strong>				                                                       			                                                       		                                                       	                                                        <?php echo htmlspecialchars($row['nama_lengkap']) ?>
+				                            </div>
+				                            <div class="col-md-6">
+				                                <strong>Total:</strong>				                                                       			                                                       		                                                       	                                                        <?php echo number_format($row['total']) ?><br>
+				                                <strong>Dibayar:</strong>				                                                         			                                                         		                                                         	                                                          <?php echo number_format($row['dibayar']) ?><br>
+				                                <strong>Kembalian:</strong>				                                                           			                                                           		                                                           	                                                            <?php echo number_format($kembalian) ?>
+				                            </div>
+				                        </div>
+				                        <table class="table table-bordered">
+				                            <thead>
+				                                <tr>
+				                                    <th>No</th>
+				                                    <th>Barang</th>
+				                                    <th>Harga</th>
+				                                    <th>Jumlah</th>
+				                                    <th>Subtotal</th>
+				                                </tr>
+				                            </thead>
+				                            <tbody>
+				                                <?php
+                                                        $no_detail = 1;
+                                                        foreach (getDetailPenjualan($conn, $row['id']) as $d):
+                                                    ?>
+				                                    <tr>
+				                                        <td><?php echo $no_detail++ ?></td>
+				                                        <td><?php echo htmlspecialchars($d['nama_barang']) ?></td>
+				                                        <td><?php echo number_format($d['harga_jual']) ?></td>
+				                                        <td><?php echo $d['jumlah'] ?></td>
+				                                        <td><?php echo number_format($d['subtotal']) ?></td>
+				                                    </tr>
+				                                <?php endforeach; ?>
                             </tbody>
                         </table>
                     </div>
@@ -320,13 +320,13 @@
                 $kembalian = $row['dibayar'] - $row['total'];
             ?>
             <div class="nota-struk">
-                <div style="text-align:center;font-size:14px;font-weight:bold;">SIBAS Mini Market</div>
-                <div style="text-align:center;font-size:11px;">Jl. Contoh Alamat No. 123<br>WA: 08xx-xxxx-xxxx</div>
+                <div style="text-align:center;font-size:14px;font-weight:bold;">SIBAS Market</div>
+                <div style="text-align:center;font-size:11px;">Jl. Gajah Mada No. 22, Gunung Anyar, Surabaya<br>WA: 0823-5678-9870</div>
                 <hr style="margin:5px 0;">
                 <div style="font-size:11px">
-                    <div>Tanggal:                                                                   <?php echo $row['tanggal'] ?></div>
-                    <div>Kasir:                                                               <?php echo htmlspecialchars($row['nama_lengkap']) ?></div>
-                    <div>No. Nota:                                                                     <?php echo $row['id'] ?></div>
+                    <div>Tanggal:                                                                                                                                     <?php echo $row['tanggal'] ?></div>
+                    <div>Kasir:                                                                                                                             <?php echo htmlspecialchars($row['nama_lengkap']) ?></div>
+                    <div>No. Nota:                                                                                                                                         <?php echo $row['id'] ?></div>
                 </div>
                 <hr style="margin:5px 0;">
                 <table style="width:100%;font-size:11px;">
@@ -627,7 +627,6 @@
     });
 
     $(document).ready(function() {
-        // ... kode lain tetap ...
 
         $('.btn-cetak-nota').on('click', function() {
             var id = $(this).data('id');
