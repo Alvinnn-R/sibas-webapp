@@ -1,13 +1,33 @@
-# Ignore uploaded files but keep folder structure
-public/upload/profile/*
-!public/upload/profile/.gitkeep
+# Abaikan semua file gambar profil user
+/public/uploads/profiles/*
+!public/uploads/profiles/.gitkeep
+/uploads/profiles/*
+!/uploads/profiles/.gitkeep
 
-# IDE files
-.vscode/
-.idea/
-*.swp
-*.swo
+# Abaikan semua file gambar di folder uploads (jika ada selain profiles)
+public/uploads/**/*.jpg
+public/uploads/**/*.jpeg
+public/uploads/**/*.png
+public/uploads/**/*.gif
+public/uploads/**/*.bmp
+public/uploads/**/*.svg
+public/uploads/**/*.webp
 
-# Temporary files
-*.tmp
-*.temp
+# Abaikan gambar di folder assets (jika memang ada)
+public/assets/**/*.jpg
+public/assets/**/*.jpeg
+public/assets/**/*.png
+public/assets/**/*.gif
+public/assets/**/*.bmp
+public/assets/**/*.svg
+public/assets/**/*.webp
+
+# Abaikan thumbnail/preview dari editor (optional, jika ada)
+*.thumb
+*.DS_Store
+
+# JANGAN ABAIKAN FILE .gitignore ITU SENDIRI!
+!.gitignore
+
+# JANGAN ABAIKAN FILE .gitkeep (jika ingin keep folder kosong di repo)
+!.gitkeep
