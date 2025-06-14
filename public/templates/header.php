@@ -8,8 +8,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="Sistem Inventaris Barang dan Supplier - SIBAS">
     <meta name="author" content="SIBAS Team">
+    <link rel="icon" href="./assets/logo_sibas.png" type="image/png">
 
-    <title>SIBAS - Dashboard</title>
+    <title>SIBAS - WebApps</title>
 
     <!-- Custom fonts for this template-->
     <link href="./vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
