@@ -2,6 +2,7 @@
 /public/uploads/profiles/*
 !public/uploads/profiles/.gitkeep
 /uploads/profiles/*
+/uploads/profiles/.gitkeep
 
 # Abaikan semua file gambar di folder uploads (jika ada selain profiles)
 public/uploads/**/*.jpg
