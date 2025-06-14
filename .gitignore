@@ -13,15 +13,6 @@ public/uploads/**/*.bmp
 public/uploads/**/*.svg
 public/uploads/**/*.webp
 
-# Abaikan gambar di folder assets (jika memang ada)
-public/assets/**/*.jpg
-public/assets/**/*.jpeg
-public/assets/**/*.png
-public/assets/**/*.gif
-public/assets/**/*.bmp
-public/assets/**/*.svg
-public/assets/**/*.webp
-
 # Abaikan thumbnail/preview dari editor (optional, jika ada)
 *.thumb
 *.DS_Store
