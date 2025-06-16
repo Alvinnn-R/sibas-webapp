@@ -1,5 +1,6 @@
 <?php
 session_start();
+$activePage = 'dashboard.php';
 include '../app/config.php';
 include '../public/templates/header.php';
 include '../public/templates/sidebar.php';

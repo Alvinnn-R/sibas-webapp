@@ -1,5 +1,6 @@
 <?php
     session_start();
+    $activePage = 'barang.php';
     include '../app/config.php';
 
     // Hanya admin yang boleh akses halaman ini

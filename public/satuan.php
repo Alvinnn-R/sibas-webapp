@@ -1,5 +1,6 @@
 <?php
     session_start();
+    $activePage = 'satuan.php';
 
     include '../app/config.php';
     // include '../app/auth.php'; // fungsi cek login

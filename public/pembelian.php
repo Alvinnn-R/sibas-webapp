@@ -1,5 +1,6 @@
 <?php
     session_start();
+    $activePage = 'pembelian.php';
     include '../app/config.php';
 
     if (! isset($_SESSION['user_id'])) {
