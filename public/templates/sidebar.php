@@ -34,7 +34,7 @@
                 <div class="sidebar-heading">
                     Master Data
                 </div>
-                <li class="nav-item">
+                <li class="nav-item <?php echo ($activePage == 'users.php') ? 'active' : ''; ?>">
                     <a class="nav-link" href="users.php">
                         <i class="fas fa-fw fa-users"></i>
                         <span>Data Pengguna</span>
